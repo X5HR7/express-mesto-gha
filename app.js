@@ -2,10 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DB_CONNECT_ADDRESS = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
 mongoose
-  .connect('mongodb://127.0.0.1:27017/mestodb', {
+  .connect(DB_CONNECT_ADDRESS, {
     useNewUrlParser: true,
   })
   .then(() => console.log('connected to db'))

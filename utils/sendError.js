@@ -10,7 +10,7 @@ const sendError = (err, res) => {
       res.status(404).send({ message: err.message });
       break;
     default:
-      res.status(500).send({ message: err.message });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
       break;
   }
 };
