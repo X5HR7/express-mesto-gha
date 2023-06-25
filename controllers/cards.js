@@ -25,7 +25,11 @@ module.exports.deleteCardById = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true, runValidators: true })
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true, runValidators: true }
+  )
     .then(card => {
       if (card) res.status(200).send({ data: card });
       else sendError({ name: 'NotFoundError', message: 'Карточка по данному id не найдена' }, res);
@@ -34,7 +38,11 @@ module.exports.likeCard = (req, res) => {
 };
 
 module.exports.dislikeCard = (req, res) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true, runValidators: true })
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true, runValidators: true }
+  )
     .then(card => {
       if (card) res.status(200).send({ data: card });
       else sendError({ name: 'NotFoundError', message: 'Карточка по данному id не найдена' }, res);
