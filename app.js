@@ -27,8 +27,10 @@ app.post(
   '/signin',
   celebrate({
     body: Joi.object().keys({
-      email: Joi.string().required(),
-      password: Joi.string().required(),
+      email: Joi.string()
+        .required()
+        .pattern(/\w+\@\w+\.\w+/),
+      password: Joi.string().required().min(2),
     }),
   }),
   login
@@ -37,11 +39,17 @@ app.post(
   '/signup',
   celebrate({
     body: Joi.object().keys({
-      email: Joi.string().required(),
-      password: Joi.string().required(),
+      email: Joi.string()
+        .required()
+        .pattern(/'\w+\@\w+\.\w+'/),
+      password: Joi.string().required().min(2),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().min(10),
+      avatar: Joi.string()
+        .min(10)
+        .pattern(
+          /^((http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9\-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-\/])*)?/
+        ),
     }),
   }),
   createUser
