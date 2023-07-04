@@ -4,7 +4,6 @@ const bodyParser = require('body-parser');
 const { errors, celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const { sendError } = require('./utils/sendError');
 const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000, DB_CONNECT_ADDRESS = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
