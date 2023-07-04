@@ -46,24 +46,23 @@ app.post(
       password: Joi.string().required(),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string()
-        .pattern(
-          /^((http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9\-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-\/])*)?/
-        ),
+      avatar: Joi.string().pattern(
+        /^((http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9\-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-\/])*)?/
+      ),
     }),
   }),
   createUser
 );
 
 app.use((req, res, next) => {
-  next(new NotFoundError('Ресурс не найден'))
+  next(new NotFoundError('Ресурс не найден'));
 });
 
 app.use(errors());
 
 app.use((err, req, res, next) => {
   if (err && err.statusCode) res.status(err.statusCode).send({ message: err.message });
-  else res.status(500).send({message: 'На сервере произошла ошибка'});
+  else res.status(500).send({ message: 'На сервере произошла ошибка' });
 });
 
 app.listen(PORT, () => {
