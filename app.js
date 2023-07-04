@@ -5,6 +5,7 @@ const { errors, celebrate, Joi } = require('celebrate');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const { sendError } = require('./utils/sendError');
+const NotFoundError = require('./errors/NotFoundError');
 
 const { PORT = 3000, DB_CONNECT_ADDRESS = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 
@@ -30,7 +31,7 @@ app.post(
       email: Joi.string()
         .required()
         .pattern(/\w+\@\w+\.\w+/),
-      password: Joi.string().required().min(2),
+      password: Joi.string().required(),
     }),
   }),
   login
@@ -42,11 +43,10 @@ app.post(
       email: Joi.string()
         .required()
         .pattern(/\w+\@\w+\.\w+/),
-      password: Joi.string().required().min(2),
+      password: Joi.string().required(),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
       avatar: Joi.string()
-        .min(10)
         .pattern(
           /^((http|https):\/\/)?(www\.)?([A-Za-zА-Яа-я0-9]{1}[A-Za-zА-Яа-я0-9\-]*\.?)*\.{1}[A-Za-zА-Яа-я0-9-]{2,8}(\/([\w#!:.?+=&%@!\-\/])*)?/
         ),
@@ -55,8 +55,8 @@ app.post(
   createUser
 );
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Ресурс не найден' });
+app.use((req, res, next) => {
+  next(new NotFoundError('Ресурс не найден'))
 });
 
 app.use(errors());
