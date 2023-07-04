@@ -13,7 +13,6 @@
       "quotes": ["error", "single"],
       "linebreak-style": "off",
       "arrow-parens": "off",
-      "no-underscore-dangle": "off",
       "object-curly-newline": "off",
       "no-console": "off",
       "comma-dangle": "off",
@@ -22,6 +21,7 @@
       "no-unused-vars": "warn",
       "curly": "off",
       "import/newline-after-import": "off",
-      "no-shadow": "off"
+      "no-shadow": "off",
+      "no-underscore-dangle": ["error",{"allow":["_id"]}]
   }
 }
