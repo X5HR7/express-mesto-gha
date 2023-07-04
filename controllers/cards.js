@@ -21,7 +21,8 @@ module.exports.deleteCardById = (req, res, next) => {
     .then(card => {
       if (!card) throw new NotFoundError('Карточка по данному id не найдена');
 
-      if (card.owner._id.toString() !== req.user._id) throw new NoAccessError('Нет прав на удаление карточки');
+      if (card.owner._id.toString() !== req.user._id)
+        throw new NoAccessError('Нет прав на удаление карточки');
 
       Card.findByIdAndDelete(req.params.cardId)
         .then(card => res.status(200).send({ data: card }))
@@ -31,7 +32,11 @@ module.exports.deleteCardById = (req, res, next) => {
 };
 
 module.exports.likeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $addToSet: { likes: req.user._id } }, { new: true, runValidators: true })
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true, runValidators: true }
+  )
     .then(card => {
       if (card) res.status(200).send({ data: card });
       else throw new NotFoundError('Карточка по данному id не найдена');
@@ -40,7 +45,11 @@ module.exports.likeCard = (req, res, next) => {
 };
 
 module.exports.dislikeCard = (req, res, next) => {
-  Card.findByIdAndUpdate(req.params.cardId, { $pull: { likes: req.user._id } }, { new: true, runValidators: true })
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true, runValidators: true }
+  )
     .then(card => {
       if (card) res.status(200).send({ data: card });
       else throw new NotFoundError('Карточка по данному id не найдена');

@@ -14,10 +14,14 @@
         "linebreak-style": "off",
         "arrow-parens": "off",
         "no-underscore-dangle": "off",
-        "object-curly-newline": ["error", {
-            "ObjectPattern": { "multiline": false }
-        }],
+        "object-curly-newline": "off",
         "no-console": "off",
-        "comma-dangle": "off"
+        "comma-dangle": "off",
+        "no-useless-escape": "off",
+        "nonblock-statement-body-position": "off",
+        "no-unused-vars": "warn",
+        "curly": "off",
+        "import/newline-after-import": "off",
+        "no-shadow": "off"
     }
 }

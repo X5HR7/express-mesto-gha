@@ -1,5 +1,4 @@
 const sendError = (err, res) => {
-  console.log(err);
   switch (err.name) {
     case 'ValidationError':
       res.status(400).send({ message: 'Переданы некорректные данные' });
@@ -20,7 +19,7 @@ const sendError = (err, res) => {
       res.status(403).send({ message: 'Нет прав на удаление карточки' });
       break;
     case 'MongoServerError':
-      if (err.code == 11000) res.status(409).send({ message: 'Данный email уже занят' });
+      if (err.code === 11000) res.status(409).send({ message: 'Данный email уже занят' });
       else res.status(500).send({ message: 'На сервере БД произошла ошибка' });
       break;
     default:
