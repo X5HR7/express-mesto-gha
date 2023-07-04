@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
+const UnavailableEmailError = require('../errors/UnavailableEmailError');
 const { JWT_KEY = '54bc67bb5cc0f214674313e60dbd0e9707a9e7f3b068bdda5b3050e9a83f4ab4' } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
@@ -20,7 +21,7 @@ module.exports.createUser = (req, res, next) => {
         .then(user => res.status(201).send({
           data: { email: user.email, name: user.name, about: user.about, avatar: user.avatar }
         }))
-        .catch(next);
+        .catch(err => next(new UnavailableEmailError('Данный email уже занят')));
     })
     .catch(next);
 };
