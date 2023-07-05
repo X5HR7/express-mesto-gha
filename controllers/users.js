@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const UnavailableEmailError = require('../errors/UnavailableEmailError');
+const DefaultServerError = require('../errors/DefaultServerError');
+const ValidationError = require('../errors/ValidationError');
 const { JWT_KEY = '54bc67bb5cc0f214674313e60dbd0e9707a9e7f3b068bdda5b3050e9a83f4ab4' } = process.env;
 
 module.exports.getUsers = (req, res, next) => {
@@ -18,10 +20,18 @@ module.exports.createUser = (req, res, next) => {
     .hash(password, 10)
     .then(hash => {
       User.create({ email, password: hash, name, about, avatar })
-        .then(user => res.status(201).send({
-          data: { email: user.email, name: user.name, about: user.about, avatar: user.avatar }
-        }))
-        .catch(err => next(new UnavailableEmailError('Данный email уже занят')));
+        .then(user =>
+          res.status(201).send({
+            data: { email: user.email, name: user.name, about: user.about, avatar: user.avatar },
+          })
+        )
+        .catch(err => {
+          if (err.name === 'ValidationError')
+            next(new ValidationError('Переданы некорректные данные'));
+          else if (err.name === 'MongoServerError' && err.code === 11000)
+            next(new UnavailableEmailError('Данный email уже занят'));
+          else next(new DefaultServerError('На сервере произошла ошибка'));
+        });
     })
     .catch(next);
 };
@@ -41,7 +51,10 @@ module.exports.getUserById = (req, res, next) => {
       if (user) res.status(200).send({ data: user });
       else throw new NotFoundError('Пользователь по данному id не найден');
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === 'CastError') next(new ValidationError('Передан невалидный id'));
+      else next(err);
+    });
 };
 
 module.exports.updateUser = (req, res, next) => {
@@ -52,7 +65,10 @@ module.exports.updateUser = (req, res, next) => {
       if (user) res.status(200).send({ data: user });
       else throw new NotFoundError('Пользователь по данному id не найден');
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === 'ValidationError') next(new ValidationError('Переданы некорректные данные'));
+      else next(err);
+    });
 };
 
 module.exports.updateUserAvatar = (req, res, next) => {
@@ -63,7 +79,10 @@ module.exports.updateUserAvatar = (req, res, next) => {
       if (user) res.status(200).send({ data: user });
       else throw new NotFoundError('Пользователь по данному id не найден');
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === 'ValidationError') next(new ValidationError('Переданы некорректные данные'));
+      else next(err);
+    });
 };
 
 module.exports.login = (req, res, next) => {

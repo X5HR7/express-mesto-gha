@@ -22,6 +22,8 @@
       "curly": "off",
       "import/newline-after-import": "off",
       "no-shadow": "off",
-      "no-underscore-dangle": ["error",{"allow":["_id"]}]
+      "no-underscore-dangle": ["error",{"allow":["_id"]}],
+      "implicit-arrow-linebreak": "off",
+      "function-paren-newline": "off"
   }
 }

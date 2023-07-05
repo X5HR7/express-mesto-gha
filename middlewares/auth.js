@@ -7,6 +7,7 @@ module.exports = (req, res, next) => {
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
     next(new AuthError('Некорректный токен'));
+    return;
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -16,6 +17,7 @@ module.exports = (req, res, next) => {
     payload = jwt.verify(token, JWT_KEY);
   } catch (err) {
     next(new AuthError('Некорректный токен'));
+    return;
   }
 
   req.user = payload;

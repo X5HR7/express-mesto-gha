@@ -1,5 +1,7 @@
+const DefaultServerError = require('../errors/DefaultServerError');
 const NoAccessError = require('../errors/NoAccessError');
 const NotFoundError = require('../errors/NotFoundError');
+const ValidationError = require('../errors/ValidationError');
 const Card = require('../models/card');
 
 module.exports.createCard = (req, res, next) => {
@@ -7,7 +9,10 @@ module.exports.createCard = (req, res, next) => {
 
   Card.create({ name, link, owner: req.user._id })
     .then(card => res.status(201).send({ data: card }))
-    .catch(next);
+    .catch(err => {
+      if (err.name === 'ValidationError') next(new ValidationError('Переданы некорректные данные'));
+      else next(new DefaultServerError('На сервере произошла ошибка'));
+    });
 };
 
 module.exports.getCards = (req, res, next) => {
@@ -28,7 +33,10 @@ module.exports.deleteCardById = (req, res, next) => {
         .then(card => res.status(200).send({ data: card }))
         .catch(next);
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === 'CastError') next(new ValidationError('Передан невалидный id'));
+      else next(err);
+    });
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -41,7 +49,10 @@ module.exports.likeCard = (req, res, next) => {
       if (card) res.status(200).send({ data: card });
       else throw new NotFoundError('Карточка по данному id не найдена');
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === 'CastError') next(new ValidationError('Передан невалидный id'));
+      else next(err);
+    });
 };
 
 module.exports.dislikeCard = (req, res, next) => {
@@ -54,5 +65,8 @@ module.exports.dislikeCard = (req, res, next) => {
       if (card) res.status(200).send({ data: card });
       else throw new NotFoundError('Карточка по данному id не найдена');
     })
-    .catch(next);
+    .catch(err => {
+      if (err.name === 'CastError') next(new ValidationError('Передан невалидный id'));
+      else next(err);
+    });
 };
